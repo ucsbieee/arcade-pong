@@ -20,9 +20,28 @@ const bot_velocity = 10;
 
 class Pad {
     constructor() {
+        this.xp = new Q11_4(32); // position
+        this.yp = new Q11_4(128);
+        this.xv = new Q11_4(0); // velocity
+        this.yv = new Q11_4(0);
+        this.height = 24; // my guess is this will become a bar
+        this.width = 8;
+        this.object = 0;
+        OBM_setColor(this.object, 0b110);
+    }
+    move_up() {
+        // if top of pad not touching top of screen
+        // or if bottom of pad not touching bottom of screen
+        
+}
 
 var pad_velocity = 0;
 var ball_velocity = 0;
+
+class Bot {
+    constructor() {
+        this.xp = new Q11_4(280);
+        this.
     }
 }
 function updatePPU() {
