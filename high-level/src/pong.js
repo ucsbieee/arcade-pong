@@ -2,27 +2,29 @@
 /* pong.js */
 var initialized = false;
 
-const   leftPaddle_x    = 60;
-var     leftPaddle_y    = 30;
-var     leftScore       = 0;
+const   leftPaddle_x        = 60;
+var     leftPaddle_y        = 30;
+var     leftScore           = 0;
 
-const   rightPaddle_x   = 90;
-var     rightPaddle_y   = 30;
-var     rightScore      = 0;
+const   rightPaddle_x       = 90;
+var     rightPaddle_y       = 30;
+var     rightScore          = 0;
 
-var     ball_xp         = 30;
-var     ball_xv         = 0;
-var     ball_yp         = 34;
-var     ball_yv         = 0;
+var     ball_xp             = 30;
+var     ball_xv             = 0;
+var     ball_yp             = 34;
+var     ball_yv             = 0;
 
-const   ball_PMFA       = 0;
-const   paddle_PMFA     = 1;
+const   ball_PMFA           = 0;
+const   paddle_PMFA         = 1;
+const   number_corner_PMBA  = 0;
+const   number_edge_PMBA    = 1;
 
-const   ball_o          = 0;
-const   paddle1top_o    = 1;
-const   paddle1bottom_o = 2;
-const   paddle2top_o    = 3;
-const   paddle2bottom_o = 4;
+const   ball_o              = 0;
+const   paddle1top_o        = 1;
+const   paddle1bottom_o     = 2;
+const   paddle2top_o        = 3;
+const   paddle2bottom_o     = 4;
 
 // fill OBM with paddle sprites
 function draw_paddles() {
@@ -61,7 +63,10 @@ function draw_ball() {
 
 // fill NTBL with number_edge and number_corner tiles
 function draw_scores() {
-
+    NTBL_setAddr(0,number_corner_PMBA);
+    NTBL_setColor(0,true);
+    NTBL_setAddr(1,number_edge_PMBA);
+    NTBL_setColor(1,true);
 }
 
 
@@ -71,13 +76,14 @@ function updatePPU() {
     reset();
     draw_ball();
     draw_paddles();
+    draw_scores();
     initialized = true;
 }
 
 function reset() {
     // update VRAM
-    VRAM_RESET();
     console.log("reseting!");
+    VRAM_RESET();
 
     // ball
     PMF[ 0] = 0b00001111; PMF[ 1] = 0b11110000;
@@ -99,6 +105,26 @@ function reset() {
     PMF[28] = 0b11111111; PMF[29] = 0b00000000;
     PMF[30] = 0b00111100; PMF[31] = 0b00000000;
 
+    // number_corner
+    PMB[ 0] = 0b11111111; PMB[ 1] = 0b11111111;
+    PMB[ 2] = 0b11111111; PMB[ 3] = 0b11111111;
+    PMB[ 4] = 0b11111111; PMB[ 5] = 0b11111111;
+    PMB[ 6] = 0b11111111; PMB[ 7] = 0b11111111;
+    PMB[ 8] = 0b11111111; PMB[ 9] = 0b00000000;
+    PMB[10] = 0b11111111; PMB[11] = 0b00000000;
+    PMB[12] = 0b11111111; PMB[13] = 0b00000000;
+    PMB[14] = 0b11111111; PMB[15] = 0b00000000;
+
+    // number_edge
+    PMB[16] = 0b11111111; PMB[17] = 0b00000000;
+    PMB[18] = 0b11111111; PMB[19] = 0b00000000;
+    PMB[20] = 0b11111111; PMB[21] = 0b00000000;
+    PMB[22] = 0b11111111; PMB[23] = 0b00000000;
+    PMB[24] = 0b11111111; PMB[25] = 0b00000000;
+    PMB[26] = 0b11111111; PMB[27] = 0b00000000;
+    PMB[28] = 0b11111111; PMB[29] = 0b00000000;
+    PMB[30] = 0b11111111; PMB[31] = 0b00000000;
+
     NTBL_Color1 = 0;
-    NTBL_Color2 = 0;
+    NTBL_Color2 = 7;
 }
