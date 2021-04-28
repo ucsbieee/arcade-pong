@@ -68,7 +68,7 @@ function draw_scores() {
     NTBL_setColor(0,true);
     NTBL_setAddr(1,number_edge_PMBA);
     NTBL_setColor(1,true);
-    
+
     for( let i = 50; i < 52; i++){
         NTBL_setAddr(i,number_edge_PMBA);
         NTBL_setColor(i,true);
@@ -81,9 +81,9 @@ function draw_scores() {
 
 
 
-    
 
-    
+
+
 }
 
 
@@ -143,14 +143,14 @@ function reset() {
     PMB[30] = 0b11111111; PMB[31] = 0b00000000;
 
     // number_edgeh
-    PMB[16] = 0b11111111; PMB[17] = 0b11111111;
-    PMB[18] = 0b11111111; PMB[19] = 0b11111111;
-    PMB[20] = 0b11111111; PMB[21] = 0b11111111;
-    PMB[22] = 0b11111111; PMB[23] = 0b11111111;
-    PMB[24] = 0b00000000; PMB[25] = 0b00000000;
-    PMB[26] = 0b00000000; PMB[27] = 0b00000000;
-    PMB[28] = 0b00000000; PMB[29] = 0b00000000;
-    PMB[30] = 0b00000000; PMB[31] = 0b00000000;
+    PMB[32] = 0b11111111; PMB[33] = 0b11111111;
+    PMB[34] = 0b11111111; PMB[35] = 0b11111111;
+    PMB[36] = 0b11111111; PMB[37] = 0b11111111;
+    PMB[38] = 0b11111111; PMB[39] = 0b11111111;
+    PMB[40] = 0b00000000; PMB[41] = 0b00000000;
+    PMB[42] = 0b00000000; PMB[43] = 0b00000000;
+    PMB[44] = 0b00000000; PMB[45] = 0b00000000;
+    PMB[46] = 0b00000000; PMB[47] = 0b00000000;
 
     NTBL_Color1 = 0;
     NTBL_Color2 = 7;
@@ -162,10 +162,10 @@ function reset() {
 *           use 1 to write for left player's "ones" digit: *0
 *           use 2 to write for right player's "tens" digit: 0*
 *           use 3 to write for right player's "ones" digit: *0
-*           
+*
 *           all other values are ignored
 */
-function drawNumber0( numberID ){
+function drawNumber0( numberID ) {
     if(numberID !== 0 && numberID !== 1 && numberID !== 2 && numberID !== 3) return
     let base = 37;
     if(numberID === 1) base += 3
@@ -209,10 +209,10 @@ function drawNumber0( numberID ){
 *           use 1 to write for left player's "ones" digit: *1
 *           use 2 to write for right player's "tens" digit: 1*
 *           use 3 to write for right player's "ones" digit: *1
-*           
+*
 *           all other values are ignored
 */
-function drawNumber1( numberID ){
+function drawNumber1( numberID ) {
     if(numberID !== 0 && numberID !== 1 && numberID !== 2 && numberID !== 3) return
     let base = 37;
     if(numberID === 1) base += 3
@@ -243,10 +243,10 @@ function drawNumber1( numberID ){
 *           use 1 to write for left player's "ones" digit: *2
 *           use 2 to write for right player's "tens" digit: 2*
 *           use 3 to write for right player's "ones" digit: *2
-*           
+*
 *           all other values are ignored
 */
-function drawNumber2( numberID ){
+function drawNumber2( numberID ) {
     if(numberID !== 0 && numberID !== 1 && numberID !== 2 && numberID !== 3) return
     let base = 37;
     if(numberID === 1) base += 3
@@ -282,5 +282,5 @@ function drawNumber2( numberID ){
     NTBL_setAddr( base+97, number_corner_PMBA)
     NTBL_setVFlip(base+97, true)
     NTBL_setHFlip(base+97, true)
-    NTBL_setColor( base+97, true )    
+    NTBL_setColor( base+97, true )
 }
