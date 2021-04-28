@@ -18,8 +18,8 @@ var     ball_yv             = 0;
 const   ball_PMFA           = 0;
 const   paddle_PMFA         = 1;
 const   number_corner_PMBA  = 0;
-const   number_edge_PMBA    = 1;
-const   number_edgeh_PMBA    = 2;
+const   number_edgev_PMBA    = 1;
+const   number_edgeh_PMBA   = 2;
 
 const   ball_o              = 0;
 const   paddle1top_o        = 1;
@@ -66,11 +66,11 @@ function draw_ball() {
 function draw_scores() {
     NTBL_setAddr(0,number_corner_PMBA);
     NTBL_setColor(0,true);
-    NTBL_setAddr(1,number_edge_PMBA);
+    NTBL_setAddr(1,number_edgev_PMBA);
     NTBL_setColor(1,true);
 
     for( let i = 50; i < 52; i++){
-        NTBL_setAddr(i,number_edge_PMBA);
+        NTBL_setAddr(i,number_edgev_PMBA);
         NTBL_setColor(i,true);
     }
 
@@ -78,6 +78,9 @@ function draw_scores() {
     drawNumber1(1)
     drawNumber0(2)
     drawNumber0(3)
+
+    NTBL_setAddr(278,number_edgeh_PMBA);
+    NTBL_setColor(278,true);
 
 
 
@@ -179,17 +182,17 @@ function drawNumber0( numberID ) {
     NTBL_setHFlip( base+1, true )
     NTBL_setColor( base+1, true )
     //3
-    NTBL_setAddr( base+32, number_edge_PMBA)
+    NTBL_setAddr( base+32, number_edgev_PMBA)
     NTBL_setColor( base+32, true )
     //4
-    NTBL_setAddr( base+33, number_edge_PMBA)
+    NTBL_setAddr( base+33, number_edgev_PMBA)
     NTBL_setHFlip( base+33, true )
     NTBL_setColor( base+33, true )
     //5
-    NTBL_setAddr( base+64, number_edge_PMBA)
+    NTBL_setAddr( base+64, number_edgev_PMBA)
     NTBL_setColor( base+64, true )
     //6
-    NTBL_setAddr( base+65, number_edge_PMBA)
+    NTBL_setAddr( base+65, number_edgev_PMBA)
     NTBL_setHFlip( base+65, true )
     NTBL_setColor( base+65, true )
     //7
@@ -219,19 +222,19 @@ function drawNumber1( numberID ) {
     if(numberID === 2) base += 17
     if(numberID === 3) base += 20
     //2
-    NTBL_setAddr( base+1, number_edge_PMBA)
+    NTBL_setAddr( base+1, number_edgev_PMBA)
     NTBL_setHFlip( base+1, true )
     NTBL_setColor( base+1, true )
     //4
-    NTBL_setAddr( base+33, number_edge_PMBA)
+    NTBL_setAddr( base+33, number_edgev_PMBA)
     NTBL_setHFlip( base+33, true )
     NTBL_setColor( base+33, true )
     //6
-    NTBL_setAddr( base+65, number_edge_PMBA)
+    NTBL_setAddr( base+65, number_edgev_PMBA)
     NTBL_setHFlip( base+65, true )
     NTBL_setColor( base+65, true )
     //8
-    NTBL_setAddr( base+97, number_edge_PMBA)
+    NTBL_setAddr( base+97, number_edgev_PMBA)
     NTBL_setVFlip(base+97, true)
     NTBL_setHFlip(base+97, true)
     NTBL_setColor( base+97, true )
@@ -253,7 +256,7 @@ function drawNumber2( numberID ) {
     if(numberID === 2) base += 17
     if(numberID === 3) base += 20
     //1
-    NTBL_setAddr( base, number_edge_PMBA)
+    NTBL_setAddr( base, number_edgev_PMBA)
     NBTL_set
     NTBL_setColor( base, true )
     //2
@@ -261,17 +264,17 @@ function drawNumber2( numberID ) {
     NTBL_setHFlip( base+1, true )
     NTBL_setColor( base+1, true )
     //3
-    NTBL_setAddr( base+32, number_edge_PMBA)
+    NTBL_setAddr( base+32, number_edgev_PMBA)
     NTBL_setColor( base+32, true )
     //4
-    NTBL_setAddr( base+33, number_edge_PMBA)
+    NTBL_setAddr( base+33, number_edgev_PMBA)
     NTBL_setHFlip( base+33, true )
     NTBL_setColor( base+33, true )
     //5
-    NTBL_setAddr( base+64, number_edge_PMBA)
+    NTBL_setAddr( base+64, number_edgev_PMBA)
     NTBL_setColor( base+64, true )
     //6
-    NTBL_setAddr( base+65, number_edge_PMBA)
+    NTBL_setAddr( base+65, number_edgev_PMBA)
     NTBL_setHFlip( base+65, true )
     NTBL_setColor( base+65, true )
     //7
