@@ -12,7 +12,7 @@ var     rightScore          = 0;
 
 var     ball_xp             = 30;
 var     ball_xv             = 0;
-var     ball_yp             = 34;
+var     ball_yp             = 00;
 var     ball_yv             = 0;
 
 const   ball_PMFA           = 0;
@@ -64,27 +64,79 @@ function draw_ball() {
 
 // fill NTBL with number_edge and number_corner tiles
 function draw_scores() {
-    NTBL_setAddr(0,number_corner_PMBA);
-    NTBL_setColor(0,true);
-    NTBL_setAddr(1,number_edgev_PMBA);
-    NTBL_setColor(1,true);
+    
+    const leftTens = Math.floor(leftScore/10) % 10
+    const leftOnes = leftScore%10
+    const rightTens = Math.floor(rightScore/10) % 10
+    const rightOnes = rightScore%10
 
-    for( let i = 50; i < 52; i++){
-        NTBL_setAddr(i,number_edgev_PMBA);
-        NTBL_setColor(i,true);
+    if(leftTens === 0) drawNumber0(0)
+    else if(leftTens === 1) drawNumber1(0)
+    else if(leftTens === 2) drawNumber2(0)
+    else if(leftTens === 3) drawNumber3(0)
+    else if(leftTens === 4) drawNumber4(0)
+    else if(leftTens === 5) drawNumber5(0)
+    else if(leftTens === 6) drawNumber6(0)
+    else if(leftTens === 7) drawNumber7(0)
+    else if(leftTens === 8) drawNumber8(0)
+    else if(leftTens === 9) drawNumber9(0)
+
+    if(leftOnes === 0) drawNumber0(1)
+    else if(leftOnes === 1) drawNumber1(1)
+    else if(leftOnes === 2) drawNumber2(1)
+    else if(leftOnes === 3) drawNumber3(1)
+    else if(leftOnes === 4) drawNumber4(1)
+    else if(leftOnes === 5) drawNumber5(1)
+    else if(leftOnes === 6) drawNumber6(1)
+    else if(leftOnes === 7) drawNumber7(1)
+    else if(leftOnes === 8) drawNumber8(1)
+    else if(leftOnes === 9) drawNumber9(1)
+
+    if(rightTens === 0) drawNumber0(2)
+    else if(rightTens === 1) drawNumber1(2)
+    else if(rightTens === 2) drawNumber2(2)
+    else if(rightTens === 3) drawNumber3(2)
+    else if(rightTens === 4) drawNumber4(2)
+    else if(rightTens === 5) drawNumber5(2)
+    else if(rightTens === 6) drawNumber6(2)
+    else if(rightTens === 7) drawNumber7(2)
+    else if(rightTens === 8) drawNumber8(2)
+    else if(rightTens === 9) drawNumber9(2)
+
+    if(rightOnes === 0) drawNumber0(3)
+    else if(rightOnes === 1) drawNumber1(3)
+    else if(rightOnes === 2) drawNumber2(3)
+    else if(rightOnes === 3) drawNumber3(3)
+    else if(rightOnes === 4) drawNumber4(3)
+    else if(rightOnes === 5) drawNumber5(3)
+    else if(rightOnes === 6) drawNumber6(3)
+    else if(rightOnes === 7) drawNumber7(3)
+    else if(rightOnes === 8) drawNumber8(3)
+    else if(rightOnes === 9) drawNumber9(3)
+
+
+}
+
+const title = (document.querySelector("#gameName"))
+console.log(title)
+
+title.addEventListener("click", () => {
+    increaseScoresAndUpdate()
+    console.log("title clicked")
+})
+
+function increaseScoresAndUpdate() {
+    rightScore++
+    if(rightScore === 100){
+        rightScore = 0
+        leftScore++
     }
+    initialized = false
+    updatePPU()
 
-    drawNumber0(0)
-    drawNumber1(1)
-    drawNumber2(2)
-    drawNumber3(3)
-
-
-
-
-
-
-
+    setTimeout( () => {
+        increaseScoresAndUpdate()
+    }, 100)
 }
 
 
@@ -95,10 +147,15 @@ function updatePPU() {
     //draw_ball();
     //draw_paddles();
     draw_scores();
+    
     initialized = true;
+
 }
 
 function reset() {
+
+
+    
     // update VRAM
     console.log("reseting!");
     VRAM_RESET();
@@ -336,3 +393,276 @@ function drawNumber3( numberID ) {
     NTBL_setHFlip(base+97, true)
     NTBL_setColor( base+97, true )
 }
+
+/* DRAWS A NUMBER 4 IN YOUR PREFERRED POSITION
+* numberID:
+*           use 0 to write for left player's "tens" digit: 4*
+*           use 1 to write for left player's "ones" digit: *4
+*           use 2 to write for right player's "tens" digit: 4*
+*           use 3 to write for right player's "ones" digit: *4
+*
+*           all other values are ignored
+*/
+function drawNumber4( numberID ) {
+    if(numberID !== 0 && numberID !== 1 && numberID !== 2 && numberID !== 3) return
+    let base = 37;
+    if(numberID === 1) base += 3
+    if(numberID === 2) base += 17
+    if(numberID === 3) base += 20
+    //1
+    NTBL_setAddr( base, number_edgev_PMBA)
+    NTBL_setColor( base, true )
+    //2
+    NTBL_setAddr( base+1, number_edgev_PMBA)
+    NTBL_setHFlip( base+1, true )
+    NTBL_setColor( base+1, true )
+    //3
+    NTBL_setAddr( base+32, number_corner_PMBA)
+    NTBL_setVFlip( base+32, true )
+    NTBL_setColor( base+32, true )
+    //4
+    NTBL_setAddr( base+33, number_corner_PMBA)
+    NTBL_setVFlip( base+33, true )
+    NTBL_setHFlip( base+33, true )
+    NTBL_setColor( base+33, true )
+    //6
+    NTBL_setAddr( base+65, number_edgev_PMBA)
+    NTBL_setHFlip( base+65, true )
+    NTBL_setColor( base+65, true )
+    //8
+    NTBL_setAddr( base+97, number_edgev_PMBA)
+    NTBL_setVFlip(base+97, true)
+    NTBL_setHFlip(base+97, true)
+    NTBL_setColor( base+97, true )
+}
+
+/* DRAWS A NUMBER 5 IN YOUR PREFERRED POSITION
+* numberID:
+*           use 0 to write for left player's "tens" digit: 5*
+*           use 1 to write for left player's "ones" digit: *5
+*           use 2 to write for right player's "tens" digit: 5*
+*           use 3 to write for right player's "ones" digit: *5
+*
+*           all other values are ignored
+*/
+function drawNumber5( numberID ) {
+    if(numberID !== 0 && numberID !== 1 && numberID !== 2 && numberID !== 3) return
+    let base = 37;
+    if(numberID === 1) base += 3
+    if(numberID === 2) base += 17
+    if(numberID === 3) base += 20
+    //1
+    NTBL_setAddr( base, number_corner_PMBA)
+    //NTBL_setVFlip( base, true )
+    NTBL_setColor( base, true )
+    //2
+    NTBL_setAddr( base+1, number_edgeh_PMBA)
+    //NTBL_setVFlip( base+1, true )
+    NTBL_setColor( base+1, true )
+    //3
+    NTBL_setAddr( base+32, number_corner_PMBA)
+    NTBL_setVFlip( base+32, true )
+    NTBL_setColor( base+32, true )
+   
+    //4
+    NTBL_setAddr( base+33, number_edgeh_PMBA)
+    NTBL_setVFlip( base+33, true )
+    NTBL_setHFlip( base+33, true )
+    
+    NTBL_setColor( base+33, true )
+    //5
+    //6
+    NTBL_setAddr( base+65, number_edgev_PMBA)
+    NTBL_setHFlip( base+65, true)
+    NTBL_setColor( base+65, true )
+    //7
+    NTBL_setAddr( base+96, number_edgeh_PMBA)
+    NTBL_setVFlip(base+96, true)
+    NTBL_setColor( base+96, true )
+    //8
+    NTBL_setAddr( base+97, number_corner_PMBA)
+    NTBL_setVFlip(base+97, true)
+    NTBL_setHFlip(base+97, true)
+    NTBL_setColor( base+97, true )
+}
+
+/* DRAWS A NUMBER 6 IN YOUR PREFERRED POSITION
+* numberID:
+*           use 0 to write for left player's "tens" digit: 6*
+*           use 1 to write for left player's "ones" digit: *6
+*           use 2 to write for right player's "tens" digit: 6*
+*           use 3 to write for right player's "ones" digit: *6
+*
+*           all other values are ignored
+*/
+function drawNumber6( numberID ) {
+    if(numberID !== 0 && numberID !== 1 && numberID !== 2 && numberID !== 3) return
+    let base = 37;
+    if(numberID === 1) base += 3
+    if(numberID === 2) base += 17
+    if(numberID === 3) base += 20
+    //1
+    NTBL_setAddr( base, number_edgev_PMBA)
+    //NTBL_setVFlip( base, true )
+    NTBL_setColor( base, true )
+    //2
+    //3
+    NTBL_setAddr( base+32, number_corner_PMBA)
+    NTBL_setVFlip( base+32, true )
+    NTBL_setColor( base+32, true )
+   
+    //4
+    NTBL_setAddr( base+33, number_edgeh_PMBA)
+    NTBL_setVFlip( base+33, true )
+    NTBL_setHFlip( base+33, true )
+    
+    NTBL_setColor( base+33, true )
+    //5
+    NTBL_setAddr( base+64, number_edgev_PMBA)
+    NTBL_setColor( base+64, true )
+    //6
+    NTBL_setAddr( base+65, number_edgev_PMBA)
+    NTBL_setHFlip( base+65, true)
+    NTBL_setColor( base+65, true )
+    //7
+    NTBL_setAddr( base+96, number_corner_PMBA)
+    NTBL_setVFlip(base+96, true)
+    NTBL_setColor( base+96, true )
+    //8
+    NTBL_setAddr( base+97, number_corner_PMBA)
+    NTBL_setVFlip(base+97, true)
+    NTBL_setHFlip(base+97, true)
+    NTBL_setColor( base+97, true )
+}
+
+/* DRAWS A NUMBER 7 IN YOUR PREFERRED POSITION
+* numberID:
+*           use 0 to write for left player's "tens" digit: 7*
+*           use 1 to write for left player's "ones" digit: *7
+*           use 2 to write for right player's "tens" digit: 7*
+*           use 3 to write for right player's "ones" digit: *7
+*
+*           all other values are ignored
+*/
+function drawNumber7( numberID ) {
+    if(numberID !== 0 && numberID !== 1 && numberID !== 2 && numberID !== 3) return
+    let base = 37;
+    if(numberID === 1) base += 3
+    if(numberID === 2) base += 17
+    if(numberID === 3) base += 20
+    //1
+    NTBL_setAddr( base, number_edgeh_PMBA)
+
+    NTBL_setColor( base, true )
+    //2
+    NTBL_setAddr( base+1, number_corner_PMBA)
+    NTBL_setHFlip( base+1, true )
+    NTBL_setColor( base+1, true )
+    //4
+    NTBL_setAddr( base+33, number_edgev_PMBA)
+    NTBL_setHFlip( base+33, true )
+    NTBL_setColor( base+33, true )
+    //6
+    NTBL_setAddr( base+65, number_edgev_PMBA)
+    NTBL_setHFlip( base+65, true )
+    NTBL_setColor( base+65, true )
+    //8
+    NTBL_setAddr( base+97, number_edgev_PMBA)
+    NTBL_setVFlip(base+97, true)
+    NTBL_setHFlip(base+97, true)
+    NTBL_setColor( base+97, true )
+}
+
+/* DRAWS A NUMBER 8 IN YOUR PREFERRED POSITION
+* numberID:
+*           use 0 to write for left player's "tens" digit: 8*
+*           use 1 to write for left player's "ones" digit: *8
+*           use 2 to write for right player's "tens" digit: 8*
+*           use 3 to write for right player's "ones" digit: *8
+*
+*           all other values are ignored
+*/
+function drawNumber8( numberID ) {
+    if(numberID !== 0 && numberID !== 1 && numberID !== 2 && numberID !== 3) return
+    let base = 37;
+    if(numberID === 1) base += 3
+    if(numberID === 2) base += 17
+    if(numberID === 3) base += 20
+    //1
+    NTBL_setAddr( base, number_corner_PMBA)
+    NTBL_setColor( base, true )
+    //2
+    NTBL_setAddr( base+1, number_corner_PMBA)
+    NTBL_setHFlip( base+1, true )
+    NTBL_setColor( base+1, true )
+    //3
+    NTBL_setAddr( base+32, number_corner_PMBA)
+    NTBL_setVFlip( base+32, true )
+    NTBL_setColor( base+32, true )
+    //4
+    NTBL_setAddr( base+33, number_corner_PMBA)
+    NTBL_setVFlip( base+33, true )
+    NTBL_setHFlip( base+33, true )
+    NTBL_setColor( base+33, true )
+    //5
+    NTBL_setAddr( base+64, number_edgev_PMBA)
+    NTBL_setColor( base+64, true )
+    //6
+    NTBL_setAddr( base+65, number_edgev_PMBA)
+    NTBL_setHFlip( base+65, true )
+    NTBL_setColor( base+65, true )
+    //7
+    NTBL_setAddr( base+96, number_corner_PMBA)
+    NTBL_setVFlip(base+96, true)
+    NTBL_setColor( base+96, true )
+    //8
+    NTBL_setAddr( base+97, number_corner_PMBA)
+    NTBL_setVFlip(base+97, true)
+    NTBL_setHFlip(base+97, true)
+    NTBL_setColor( base+97, true )
+}
+
+/* DRAWS A NUMBER 9 IN YOUR PREFERRED POSITION
+* numberID:
+*           use 0 to write for left player's "tens" digit: 9*
+*           use 1 to write for left player's "ones" digit: *9
+*           use 2 to write for right player's "tens" digit: 9*
+*           use 3 to write for right player's "ones" digit: *9
+*
+*           all other values are ignored
+*/
+function drawNumber9( numberID ) {
+    if(numberID !== 0 && numberID !== 1 && numberID !== 2 && numberID !== 3) return
+    let base = 37;
+    if(numberID === 1) base += 3
+    if(numberID === 2) base += 17
+    if(numberID === 3) base += 20
+    //1
+    NTBL_setAddr( base, number_corner_PMBA)
+    NTBL_setColor( base, true )
+    //2
+    NTBL_setAddr( base+1, number_corner_PMBA)
+    NTBL_setHFlip( base+1, true )
+    NTBL_setColor( base+1, true )
+    //3
+    NTBL_setAddr( base+32, number_corner_PMBA)
+    NTBL_setVFlip( base+32, true )
+    NTBL_setColor( base+32, true )
+    //4
+    NTBL_setAddr( base+33, number_corner_PMBA)
+    NTBL_setVFlip( base+33, true )
+    NTBL_setHFlip( base+33, true )
+    NTBL_setColor( base+33, true )
+    //5
+    //6
+    NTBL_setAddr( base+65, number_edgev_PMBA)
+    NTBL_setHFlip( base+65, true )
+    NTBL_setColor( base+65, true )
+    //7
+    //8
+    NTBL_setAddr( base+97, number_edgev_PMBA)
+    NTBL_setHFlip( base+97, true )
+    NTBL_setColor( base+97, true )
+}
+
+
