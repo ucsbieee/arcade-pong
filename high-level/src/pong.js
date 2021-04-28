@@ -67,6 +67,45 @@ function draw_scores() {
     NTBL_setColor(0,true);
     NTBL_setAddr(1,number_edge_PMBA);
     NTBL_setColor(1,true);
+    
+    for( let i = 50; i < 52; i++){
+        NTBL_setAddr(i,number_edge_PMBA);
+        NTBL_setColor(i,true);
+    }
+
+    NTBL_setAddr( 70, number_corner_PMBA)
+    NTBL_setColor( 70, true )
+
+    NTBL_setAddr( 71, number_corner_PMBA)
+    NTBL_setHFlip( 71, true )
+    NTBL_setColor( 71, true )
+
+    NTBL_setAddr( 102, number_edge_PMBA)
+    NTBL_setColor( 102, true )
+    NTBL_setAddr( 103, number_edge_PMBA)
+    NTBL_setHFlip( 103, true )
+    NTBL_setColor( 103, true )
+
+    NTBL_setAddr( 134, number_edge_PMBA)
+    NTBL_setColor( 134, true )
+    NTBL_setAddr( 135, number_edge_PMBA)
+    NTBL_setHFlip( 135, true )
+    NTBL_setColor( 135, true )
+
+    NTBL_setAddr( 166, number_corner_PMBA)
+    NTBL_setVFlip(166, true)
+    NTBL_setColor( 166, true )
+
+    NTBL_setAddr( 167, number_corner_PMBA)
+    NTBL_setVFlip(167, true)
+    NTBL_setHFlip(167, true)
+    NTBL_setColor( 167, true )
+
+
+
+    
+
+    
 }
 
 
@@ -74,8 +113,8 @@ function draw_scores() {
 function updatePPU() {
     if (initialized) return;
     reset();
-    draw_ball();
-    draw_paddles();
+    //draw_ball();
+    //draw_paddles();
     draw_scores();
     initialized = true;
 }
