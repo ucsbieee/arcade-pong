@@ -19,6 +19,7 @@ const   ball_PMFA           = 0;
 const   paddle_PMFA         = 1;
 const   number_corner_PMBA  = 0;
 const   number_edge_PMBA    = 1;
+const   number_edgeh_PMBA    = 2;
 
 const   ball_o              = 0;
 const   paddle1top_o        = 1;
@@ -73,33 +74,10 @@ function draw_scores() {
         NTBL_setColor(i,true);
     }
 
-    NTBL_setAddr( 70, number_corner_PMBA)
-    NTBL_setColor( 70, true )
-
-    NTBL_setAddr( 71, number_corner_PMBA)
-    NTBL_setHFlip( 71, true )
-    NTBL_setColor( 71, true )
-
-    NTBL_setAddr( 102, number_edge_PMBA)
-    NTBL_setColor( 102, true )
-    NTBL_setAddr( 103, number_edge_PMBA)
-    NTBL_setHFlip( 103, true )
-    NTBL_setColor( 103, true )
-
-    NTBL_setAddr( 134, number_edge_PMBA)
-    NTBL_setColor( 134, true )
-    NTBL_setAddr( 135, number_edge_PMBA)
-    NTBL_setHFlip( 135, true )
-    NTBL_setColor( 135, true )
-
-    NTBL_setAddr( 166, number_corner_PMBA)
-    NTBL_setVFlip(166, true)
-    NTBL_setColor( 166, true )
-
-    NTBL_setAddr( 167, number_corner_PMBA)
-    NTBL_setVFlip(167, true)
-    NTBL_setHFlip(167, true)
-    NTBL_setColor( 167, true )
+    drawNumber0(0)
+    drawNumber1(1)
+    drawNumber0(2)
+    drawNumber0(3)
 
 
 
@@ -164,6 +142,145 @@ function reset() {
     PMB[28] = 0b11111111; PMB[29] = 0b00000000;
     PMB[30] = 0b11111111; PMB[31] = 0b00000000;
 
+    // number_edgeh
+    PMB[16] = 0b11111111; PMB[17] = 0b11111111;
+    PMB[18] = 0b11111111; PMB[19] = 0b11111111;
+    PMB[20] = 0b11111111; PMB[21] = 0b11111111;
+    PMB[22] = 0b11111111; PMB[23] = 0b11111111;
+    PMB[24] = 0b00000000; PMB[25] = 0b00000000;
+    PMB[26] = 0b00000000; PMB[27] = 0b00000000;
+    PMB[28] = 0b00000000; PMB[29] = 0b00000000;
+    PMB[30] = 0b00000000; PMB[31] = 0b00000000;
+
     NTBL_Color1 = 0;
     NTBL_Color2 = 7;
+}
+
+/* DRAWS A NUMBER 0 IN YOUR PREFERRED POSITION
+* numberID:
+*           use 0 to write for left player's "tens" digit: 0*
+*           use 1 to write for left player's "ones" digit: *0
+*           use 2 to write for right player's "tens" digit: 0*
+*           use 3 to write for right player's "ones" digit: *0
+*           
+*           all other values are ignored
+*/
+function drawNumber0( numberID ){
+    if(numberID !== 0 && numberID !== 1 && numberID !== 2 && numberID !== 3) return
+    let base = 37;
+    if(numberID === 1) base += 3
+    if(numberID === 2) base += 17
+    if(numberID === 3) base += 20
+    //1
+    NTBL_setAddr( base, number_corner_PMBA)
+    NTBL_setColor( base, true )
+    //2
+    NTBL_setAddr( base+1, number_corner_PMBA)
+    NTBL_setHFlip( base+1, true )
+    NTBL_setColor( base+1, true )
+    //3
+    NTBL_setAddr( base+32, number_edge_PMBA)
+    NTBL_setColor( base+32, true )
+    //4
+    NTBL_setAddr( base+33, number_edge_PMBA)
+    NTBL_setHFlip( base+33, true )
+    NTBL_setColor( base+33, true )
+    //5
+    NTBL_setAddr( base+64, number_edge_PMBA)
+    NTBL_setColor( base+64, true )
+    //6
+    NTBL_setAddr( base+65, number_edge_PMBA)
+    NTBL_setHFlip( base+65, true )
+    NTBL_setColor( base+65, true )
+    //7
+    NTBL_setAddr( base+96, number_corner_PMBA)
+    NTBL_setVFlip(base+96, true)
+    NTBL_setColor( base+96, true )
+    //8
+    NTBL_setAddr( base+97, number_corner_PMBA)
+    NTBL_setVFlip(base+97, true)
+    NTBL_setHFlip(base+97, true)
+    NTBL_setColor( base+97, true )
+}
+
+/* DRAWS A NUMBER 1 IN YOUR PREFERRED POSITION
+* numberID:
+*           use 0 to write for left player's "tens" digit: 1*
+*           use 1 to write for left player's "ones" digit: *1
+*           use 2 to write for right player's "tens" digit: 1*
+*           use 3 to write for right player's "ones" digit: *1
+*           
+*           all other values are ignored
+*/
+function drawNumber1( numberID ){
+    if(numberID !== 0 && numberID !== 1 && numberID !== 2 && numberID !== 3) return
+    let base = 37;
+    if(numberID === 1) base += 3
+    if(numberID === 2) base += 17
+    if(numberID === 3) base += 20
+    //2
+    NTBL_setAddr( base+1, number_edge_PMBA)
+    NTBL_setHFlip( base+1, true )
+    NTBL_setColor( base+1, true )
+    //4
+    NTBL_setAddr( base+33, number_edge_PMBA)
+    NTBL_setHFlip( base+33, true )
+    NTBL_setColor( base+33, true )
+    //6
+    NTBL_setAddr( base+65, number_edge_PMBA)
+    NTBL_setHFlip( base+65, true )
+    NTBL_setColor( base+65, true )
+    //8
+    NTBL_setAddr( base+97, number_edge_PMBA)
+    NTBL_setVFlip(base+97, true)
+    NTBL_setHFlip(base+97, true)
+    NTBL_setColor( base+97, true )
+}
+
+/* DRAWS A NUMBER 2 IN YOUR PREFERRED POSITION
+* numberID:
+*           use 0 to write for left player's "tens" digit: 2*
+*           use 1 to write for left player's "ones" digit: *2
+*           use 2 to write for right player's "tens" digit: 2*
+*           use 3 to write for right player's "ones" digit: *2
+*           
+*           all other values are ignored
+*/
+function drawNumber2( numberID ){
+    if(numberID !== 0 && numberID !== 1 && numberID !== 2 && numberID !== 3) return
+    let base = 37;
+    if(numberID === 1) base += 3
+    if(numberID === 2) base += 17
+    if(numberID === 3) base += 20
+    //1
+    NTBL_setAddr( base, number_edge_PMBA)
+    NBTL_set
+    NTBL_setColor( base, true )
+    //2
+    NTBL_setAddr( base+1, number_corner_PMBA)
+    NTBL_setHFlip( base+1, true )
+    NTBL_setColor( base+1, true )
+    //3
+    NTBL_setAddr( base+32, number_edge_PMBA)
+    NTBL_setColor( base+32, true )
+    //4
+    NTBL_setAddr( base+33, number_edge_PMBA)
+    NTBL_setHFlip( base+33, true )
+    NTBL_setColor( base+33, true )
+    //5
+    NTBL_setAddr( base+64, number_edge_PMBA)
+    NTBL_setColor( base+64, true )
+    //6
+    NTBL_setAddr( base+65, number_edge_PMBA)
+    NTBL_setHFlip( base+65, true )
+    NTBL_setColor( base+65, true )
+    //7
+    NTBL_setAddr( base+96, number_corner_PMBA)
+    NTBL_setVFlip(base+96, true)
+    NTBL_setColor( base+96, true )
+    //8
+    NTBL_setAddr( base+97, number_corner_PMBA)
+    NTBL_setVFlip(base+97, true)
+    NTBL_setHFlip(base+97, true)
+    NTBL_setColor( base+97, true )    
 }
