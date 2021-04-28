@@ -76,11 +76,9 @@ function draw_scores() {
 
     drawNumber0(0)
     drawNumber1(1)
-    drawNumber0(2)
-    drawNumber0(3)
+    drawNumber2(2)
+    drawNumber3(3)
 
-    NTBL_setAddr(278,number_edgeh_PMBA);
-    NTBL_setColor(278,true);
 
 
 
@@ -256,29 +254,80 @@ function drawNumber2( numberID ) {
     if(numberID === 2) base += 17
     if(numberID === 3) base += 20
     //1
-    NTBL_setAddr( base, number_edgev_PMBA)
-    NBTL_set
+    NTBL_setAddr( base, number_edgeh_PMBA)
+    
     NTBL_setColor( base, true )
     //2
     NTBL_setAddr( base+1, number_corner_PMBA)
     NTBL_setHFlip( base+1, true )
     NTBL_setColor( base+1, true )
     //3
-    NTBL_setAddr( base+32, number_edgev_PMBA)
+    NTBL_setAddr( base+32, number_edgeh_PMBA)
+    NTBL_setVFlip( base+32, true )
     NTBL_setColor( base+32, true )
+   
     //4
-    NTBL_setAddr( base+33, number_edgev_PMBA)
+    NTBL_setAddr( base+33, number_corner_PMBA)
+    NTBL_setVFlip( base+33, true )
     NTBL_setHFlip( base+33, true )
+    
     NTBL_setColor( base+33, true )
     //5
     NTBL_setAddr( base+64, number_edgev_PMBA)
+
     NTBL_setColor( base+64, true )
     //6
-    NTBL_setAddr( base+65, number_edgev_PMBA)
-    NTBL_setHFlip( base+65, true )
-    NTBL_setColor( base+65, true )
     //7
     NTBL_setAddr( base+96, number_corner_PMBA)
+    NTBL_setVFlip(base+96, true)
+    NTBL_setColor( base+96, true )
+    //8
+    NTBL_setAddr( base+97, number_edgeh_PMBA)
+    NTBL_setVFlip(base+97, true)
+    NTBL_setColor( base+97, true )
+}
+
+/* DRAWS A NUMBER 3 IN YOUR PREFERRED POSITION
+* numberID:
+*           use 0 to write for left player's "tens" digit: 3*
+*           use 1 to write for left player's "ones" digit: *3
+*           use 2 to write for right player's "tens" digit: 3*
+*           use 3 to write for right player's "ones" digit: *3
+*
+*           all other values are ignored
+*/
+function drawNumber3( numberID ) {
+    if(numberID !== 0 && numberID !== 1 && numberID !== 2 && numberID !== 3) return
+    let base = 37;
+    if(numberID === 1) base += 3
+    if(numberID === 2) base += 17
+    if(numberID === 3) base += 20
+    //1
+    NTBL_setAddr( base, number_edgeh_PMBA)
+    
+    NTBL_setColor( base, true )
+    //2
+    NTBL_setAddr( base+1, number_corner_PMBA)
+    NTBL_setHFlip( base+1, true )
+    NTBL_setColor( base+1, true )
+    //3
+    NTBL_setAddr( base+32, number_edgeh_PMBA)
+    NTBL_setVFlip( base+32, true )
+    NTBL_setColor( base+32, true )
+   
+    //4
+    NTBL_setAddr( base+33, number_corner_PMBA)
+    NTBL_setVFlip( base+33, true )
+    NTBL_setHFlip( base+33, true )
+    
+    NTBL_setColor( base+33, true )
+    //5
+    //6
+    NTBL_setAddr( base+65, number_edgev_PMBA)
+    NTBL_setHFlip( base+65, true)
+    NTBL_setColor( base+65, true )
+    //7
+    NTBL_setAddr( base+96, number_edgeh_PMBA)
     NTBL_setVFlip(base+96, true)
     NTBL_setColor( base+96, true )
     //8
