@@ -4,21 +4,23 @@ var initialized = false;
 
 const   leftPaddle_x        = 60;
 var     leftPaddle_y        = 30;
-var     leftScore           = 0;
+var     leftScoreOnes       = 0;
+var     leftScoreTens       = 0;
 
 const   rightPaddle_x       = 90;
 var     rightPaddle_y       = 30;
-var     rightScore          = 0;
+var     rightScoreOnes      = 0;
+var     rightScoreTens      = 0;
 
 var     ball_xp             = 30;
 var     ball_xv             = 0;
-var     ball_yp             = 00;
+var     ball_yp             = 0;
 var     ball_yv             = 0;
 
 const   ball_PMFA           = 0;
 const   paddle_PMFA         = 1;
 const   number_corner_PMBA  = 0;
-const   number_edgev_PMBA    = 1;
+const   number_edgev_PMBA   = 1;
 const   number_edgeh_PMBA   = 2;
 
 const   ball_o              = 0;
@@ -64,82 +66,52 @@ function draw_ball() {
 
 // fill NTBL with number_edge and number_corner tiles
 function draw_scores() {
-    
-    const leftTens = Math.floor(leftScore/10) % 10
-    const leftOnes = leftScore%10
-    const rightTens = Math.floor(rightScore/10) % 10
-    const rightOnes = rightScore%10
 
-    if(leftTens === 0) drawNumber0(0)
-    else if(leftTens === 1) drawNumber1(0)
-    else if(leftTens === 2) drawNumber2(0)
-    else if(leftTens === 3) drawNumber3(0)
-    else if(leftTens === 4) drawNumber4(0)
-    else if(leftTens === 5) drawNumber5(0)
-    else if(leftTens === 6) drawNumber6(0)
-    else if(leftTens === 7) drawNumber7(0)
-    else if(leftTens === 8) drawNumber8(0)
-    else if(leftTens === 9) drawNumber9(0)
+    if     (leftScoreTens === 0) drawNumber0(0);
+    else if(leftScoreTens === 1) drawNumber1(0);
+    else if(leftScoreTens === 2) drawNumber2(0);
+    else if(leftScoreTens === 3) drawNumber3(0);
+    else if(leftScoreTens === 4) drawNumber4(0);
+    else if(leftScoreTens === 5) drawNumber5(0);
+    else if(leftScoreTens === 6) drawNumber6(0);
+    else if(leftScoreTens === 7) drawNumber7(0);
+    else if(leftScoreTens === 8) drawNumber8(0);
+    else if(leftScoreTens === 9) drawNumber9(0);
 
-    if(leftOnes === 0) drawNumber0(1)
-    else if(leftOnes === 1) drawNumber1(1)
-    else if(leftOnes === 2) drawNumber2(1)
-    else if(leftOnes === 3) drawNumber3(1)
-    else if(leftOnes === 4) drawNumber4(1)
-    else if(leftOnes === 5) drawNumber5(1)
-    else if(leftOnes === 6) drawNumber6(1)
-    else if(leftOnes === 7) drawNumber7(1)
-    else if(leftOnes === 8) drawNumber8(1)
-    else if(leftOnes === 9) drawNumber9(1)
+    if     (leftScoreOnes === 0) drawNumber0(1);
+    else if(leftScoreOnes === 1) drawNumber1(1);
+    else if(leftScoreOnes === 2) drawNumber2(1);
+    else if(leftScoreOnes === 3) drawNumber3(1);
+    else if(leftScoreOnes === 4) drawNumber4(1);
+    else if(leftScoreOnes === 5) drawNumber5(1);
+    else if(leftScoreOnes === 6) drawNumber6(1);
+    else if(leftScoreOnes === 7) drawNumber7(1);
+    else if(leftScoreOnes === 8) drawNumber8(1);
+    else if(leftScoreOnes === 9) drawNumber9(1);
 
-    if(rightTens === 0) drawNumber0(2)
-    else if(rightTens === 1) drawNumber1(2)
-    else if(rightTens === 2) drawNumber2(2)
-    else if(rightTens === 3) drawNumber3(2)
-    else if(rightTens === 4) drawNumber4(2)
-    else if(rightTens === 5) drawNumber5(2)
-    else if(rightTens === 6) drawNumber6(2)
-    else if(rightTens === 7) drawNumber7(2)
-    else if(rightTens === 8) drawNumber8(2)
-    else if(rightTens === 9) drawNumber9(2)
+    if     (rightScoreTens === 0) drawNumber0(2);
+    else if(rightScoreTens === 1) drawNumber1(2);
+    else if(rightScoreTens === 2) drawNumber2(2);
+    else if(rightScoreTens === 3) drawNumber3(2);
+    else if(rightScoreTens === 4) drawNumber4(2);
+    else if(rightScoreTens === 5) drawNumber5(2);
+    else if(rightScoreTens === 6) drawNumber6(2);
+    else if(rightScoreTens === 7) drawNumber7(2);
+    else if(rightScoreTens === 8) drawNumber8(2);
+    else if(rightScoreTens === 9) drawNumber9(2);
 
-    if(rightOnes === 0) drawNumber0(3)
-    else if(rightOnes === 1) drawNumber1(3)
-    else if(rightOnes === 2) drawNumber2(3)
-    else if(rightOnes === 3) drawNumber3(3)
-    else if(rightOnes === 4) drawNumber4(3)
-    else if(rightOnes === 5) drawNumber5(3)
-    else if(rightOnes === 6) drawNumber6(3)
-    else if(rightOnes === 7) drawNumber7(3)
-    else if(rightOnes === 8) drawNumber8(3)
-    else if(rightOnes === 9) drawNumber9(3)
-
+    if     (rightScoreOnes === 0) drawNumber0(3);
+    else if(rightScoreOnes === 1) drawNumber1(3);
+    else if(rightScoreOnes === 2) drawNumber2(3);
+    else if(rightScoreOnes === 3) drawNumber3(3);
+    else if(rightScoreOnes === 4) drawNumber4(3);
+    else if(rightScoreOnes === 5) drawNumber5(3);
+    else if(rightScoreOnes === 6) drawNumber6(3);
+    else if(rightScoreOnes === 7) drawNumber7(3);
+    else if(rightScoreOnes === 8) drawNumber8(3);
+    else if(rightScoreOnes === 9) drawNumber9(3);
 
 }
-
-const title = (document.querySelector("#gameName"))
-console.log(title)
-
-title.addEventListener("click", () => {
-    increaseScoresAndUpdate()
-    console.log("title clicked")
-})
-
-function increaseScoresAndUpdate() {
-    rightScore++
-    if(rightScore === 100){
-        rightScore = 0
-        leftScore++
-    }
-    initialized = false
-    updatePPU()
-
-    setTimeout( () => {
-        increaseScoresAndUpdate()
-    }, 100)
-}
-
-
 
 function updatePPU() {
     if (initialized) return;
@@ -147,15 +119,13 @@ function updatePPU() {
     //draw_ball();
     //draw_paddles();
     draw_scores();
-    
+
     initialized = true;
 
 }
 
 function reset() {
 
-
-    
     // update VRAM
     console.log("reseting!");
     VRAM_RESET();
@@ -312,7 +282,7 @@ function drawNumber2( numberID ) {
     if(numberID === 3) base += 20
     //1
     NTBL_setAddr( base, number_edgeh_PMBA)
-    
+
     NTBL_setColor( base, true )
     //2
     NTBL_setAddr( base+1, number_corner_PMBA)
@@ -322,12 +292,12 @@ function drawNumber2( numberID ) {
     NTBL_setAddr( base+32, number_edgeh_PMBA)
     NTBL_setVFlip( base+32, true )
     NTBL_setColor( base+32, true )
-   
+
     //4
     NTBL_setAddr( base+33, number_corner_PMBA)
     NTBL_setVFlip( base+33, true )
     NTBL_setHFlip( base+33, true )
-    
+
     NTBL_setColor( base+33, true )
     //5
     NTBL_setAddr( base+64, number_edgev_PMBA)
@@ -361,7 +331,7 @@ function drawNumber3( numberID ) {
     if(numberID === 3) base += 20
     //1
     NTBL_setAddr( base, number_edgeh_PMBA)
-    
+
     NTBL_setColor( base, true )
     //2
     NTBL_setAddr( base+1, number_corner_PMBA)
@@ -371,12 +341,12 @@ function drawNumber3( numberID ) {
     NTBL_setAddr( base+32, number_edgeh_PMBA)
     NTBL_setVFlip( base+32, true )
     NTBL_setColor( base+32, true )
-   
+
     //4
     NTBL_setAddr( base+33, number_corner_PMBA)
     NTBL_setVFlip( base+33, true )
     NTBL_setHFlip( base+33, true )
-    
+
     NTBL_setColor( base+33, true )
     //5
     //6
@@ -463,12 +433,12 @@ function drawNumber5( numberID ) {
     NTBL_setAddr( base+32, number_corner_PMBA)
     NTBL_setVFlip( base+32, true )
     NTBL_setColor( base+32, true )
-   
+
     //4
     NTBL_setAddr( base+33, number_edgeh_PMBA)
     NTBL_setVFlip( base+33, true )
     NTBL_setHFlip( base+33, true )
-    
+
     NTBL_setColor( base+33, true )
     //5
     //6
@@ -510,12 +480,12 @@ function drawNumber6( numberID ) {
     NTBL_setAddr( base+32, number_corner_PMBA)
     NTBL_setVFlip( base+32, true )
     NTBL_setColor( base+32, true )
-   
+
     //4
     NTBL_setAddr( base+33, number_edgeh_PMBA)
     NTBL_setVFlip( base+33, true )
     NTBL_setHFlip( base+33, true )
-    
+
     NTBL_setColor( base+33, true )
     //5
     NTBL_setAddr( base+64, number_edgev_PMBA)
