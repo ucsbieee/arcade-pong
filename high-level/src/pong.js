@@ -29,6 +29,44 @@ const   paddle1bottom_o     = 2;
 const   paddle2top_o        = 3;
 const   paddle2bottom_o     = 4;
 
+
+
+
+/* ====================================================================== */
+/* ============================= Interrupts ============================= */
+/* ====================================================================== */
+
+
+function reset() {
+    // update VRAM
+    console.log("reseting!");
+    VRAM_RESET();
+}
+
+function do_logic() {
+
+}
+
+function fill_vram() {
+    draw_ball();
+    draw_paddles();
+    draw_scores();
+
+    if (initialized) return;
+    initialized = true;
+    VRAM_RESET();
+    fill_PMF();
+    fill_PMB();
+}
+
+
+
+
+/* ====================================================================== */
+/* ============================= VRAM Update ============================ */
+/* ====================================================================== */
+
+
 // fill OBM with paddle sprites
 function draw_paddles() {
     OBM_setAddr( paddle1top_o, paddle_PMFA );
@@ -113,23 +151,7 @@ function draw_scores() {
 
 }
 
-function updatePPU() {
-    if (initialized) return;
-    reset();
-    //draw_ball();
-    //draw_paddles();
-    draw_scores();
-
-    initialized = true;
-
-}
-
-function reset() {
-
-    // update VRAM
-    console.log("reseting!");
-    VRAM_RESET();
-
+function fill_PMF() {
     // ball
     PMF[ 0] = 0b00001111; PMF[ 1] = 0b11110000;
     PMF[ 2] = 0b00111111; PMF[ 3] = 0b11111100;
@@ -150,6 +172,11 @@ function reset() {
     PMF[28] = 0b11111111; PMF[29] = 0b00000000;
     PMF[30] = 0b00111100; PMF[31] = 0b00000000;
 
+}
+
+function fill_PMB() {
+    NTBL_Color1 = 0;
+    NTBL_Color2 = 7;
     // number_corner
     PMB[ 0] = 0b11111111; PMB[ 1] = 0b11111111;
     PMB[ 2] = 0b11111111; PMB[ 3] = 0b11111111;
@@ -179,10 +206,15 @@ function reset() {
     PMB[42] = 0b00000000; PMB[43] = 0b00000000;
     PMB[44] = 0b00000000; PMB[45] = 0b00000000;
     PMB[46] = 0b00000000; PMB[47] = 0b00000000;
-
-    NTBL_Color1 = 0;
-    NTBL_Color2 = 7;
 }
+
+
+
+
+/* ====================================================================== */
+/* =========================== Drawing Scores =========================== */
+/* ====================================================================== */
+
 
 /* DRAWS A NUMBER 0 IN YOUR PREFERRED POSITION
 * numberID:
@@ -634,5 +666,3 @@ function drawNumber9( numberID ) {
     NTBL_setHFlip( base+97, true )
     NTBL_setColor( base+97, true )
 }
-
-
