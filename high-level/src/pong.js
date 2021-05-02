@@ -1,19 +1,25 @@
 
 /* pong.js */
 var initialized = false;
+var twoControllers = true;
 
-const   leftPaddle_x        = 60;
-var     leftPaddle_y        = 30;
+var upArrowPressed = false
+var downArrowPressed = false
+
+const   leftPaddle_x        = 30;
+var     leftPaddle_y        = 50;
 var     leftScoreOnes       = 0;
 var     leftScoreTens       = 0;
 
-const   rightPaddle_x       = 90;
-var     rightPaddle_y       = 30;
+const paddleSpeed = 5;
+
+const   rightPaddle_x       = 120;
+var     rightPaddle_y       = 50;
 var     rightScoreOnes      = 0;
 var     rightScoreTens      = 0;
 
 var     ball_xp             = 30;
-var     ball_xv             = 0;
+var     ball_xv             = 5;
 var     ball_yp             = 0;
 var     ball_yv             = 0;
 
@@ -40,10 +46,24 @@ const   paddle2bottom_o     = 4;
 function reset() {
     // update VRAM
     console.log("reseting!");
-    VRAM_RESET();
+    //VRAM_RESET();
+    initialized = false
 }
 
 function do_logic() {
+
+    console.log("Do_logic is running")
+    
+
+    getInput()
+
+
+   if( upArrowPressed ){
+       rightPaddle_y -= paddleSpeed
+   }
+   if( downArrowPressed ){
+       rightPaddle_y += paddleSpeed
+   }
 
 }
 
@@ -54,9 +74,19 @@ function fill_vram() {
 
     if (initialized) return;
     initialized = true;
-    VRAM_RESET();
+    //VRAM_RESET();
     fill_PMF();
     fill_PMB();
+}
+
+function getInput() {
+
+    upArrowPressed = false;
+    downArrowPressed = false;
+
+    upArrowPressed = CONTROLLER1_UP()
+    downArrowPressed = CONTROLLER1_DOWN()
+
 }
 
 
