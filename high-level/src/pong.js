@@ -1,36 +1,37 @@
 
 /* pong.js */
-var initialized = false;
 
-var upArrowPressed = false
-var downArrowPressed = false
+
+var initialized             = false;
 
 // game will start when either of the controllers will be moved
-var gameStarted = false;
+var gameStarted             = false;
 
 const   leftPaddle_x        = 30;
 var     leftPaddle_y        = 150;
 var     leftScoreOnes       = 0;
 var     leftScoreTens       = 0;
 
-const screenBottomLimit = 225;
-const screenTopLimit = 0;
+const   screenBottomLimit   = 225;
+const   screenTopLimit      = 0;
 
-const leftPaddleHitBoxX = 38;
-const rightPaddleHitBoxX = 209;
-const paddleHitBoxTop = -7;
-const paddleHitBoxBottom = 14;
-
-
+const   leftPaddleHitBoxX   = 38;
+const   rightPaddleHitBoxX  = 209;
+const   paddleHitBoxTop     = -7;
+const   paddleHitBoxBottom  = 14;
 
 
-const paddleSpeed = 5;
+
+
+const   paddleSpeed         = 5;
 
 const   rightPaddle_x       = 217;
 var     rightPaddle_y       = 150;
 var     rightScoreOnes      = 0;
 var     rightScoreTens      = 0;
 
+// might want to make these a Q9_6
+// https://github.com/ucsbieee/arcade/blob/f72d8297d7c048d84677ff8892c5a867fe0f105f/high-level/src/firmware.js#L6
 var     ball_xp             = 60;
 var     ball_xv             = -1;
 var     ball_yp             = 150;
@@ -57,65 +58,79 @@ const   paddle2bottom_o     = 4;
 
 
 function reset() {
-    // update VRAM
     console.log("reseting!");
-    //VRAM_RESET();
     initialized = false
 }
 
 function do_logic() {
 
     //console.log(`Do_logic is running ${rightPaddle_y}`)
-    
-
-    getInput()
 
 
-   if( upArrowPressed ){
-       rightPaddle_y -= paddleSpeed
-   }
-   if( downArrowPressed ){
-       rightPaddle_y += paddleSpeed
-   }
+    if        ( CONTROLLER1_UP() ) {
+        rightPaddle_y -= paddleSpeed;
+        gameStarted = true;
+    } else if ( CONTROLLER1_DOWN() ) {
+        rightPaddle_y += paddleSpeed;
+        gameStarted = true;
+    }
 
-   if( wPressed ){
-       leftPaddle_y -= paddleSpeed
-   }
+    if        ( CONTROLLER2_UP() ) {
+        leftPaddle_y -= paddleSpeed;
+        gameStarted = true;
+    } else if ( CONTROLLER2_DOWN() ) {
+        leftPaddle_y += paddleSpeed;
+        gameStarted = true;
+    }
 
-   if( sPressed ){
-       leftPaddle_y += paddleSpeed
-   }
+    // put constraints on the paddle positions so they don't fly off screen
+    rightPaddle_y = Math.max(rightPaddle_y, screenTopLimit)
+    rightPaddle_y = Math.min(rightPaddle_y, screenBottomLimit)
 
-   if(sPressed || wPressed || downArrowPressed || upArrowPressed) gameStarted = true;
+    leftPaddle_y = Math.max(leftPaddle_y, screenTopLimit)
+    leftPaddle_y = Math.min(leftPaddle_y, screenBottomLimit)
 
-   // put constraints on the paddle positions so they don't fly off screen
-   rightPaddle_y = Math.max(rightPaddle_y, screenTopLimit)
-   rightPaddle_y = Math.min(rightPaddle_y, screenBottomLimit)
+    if(gameStarted){
+        ball_xp += ball_xv
+        ball_yp += ball_yv
+    }
 
-   leftPaddle_y = Math.max(leftPaddle_y, screenTopLimit)
-   leftPaddle_y = Math.min(leftPaddle_y, screenBottomLimit)
+    if(ball_yp <= screenTopLimit){
+        ball_yv = -ball_yv
+    }
+    if(ball_yp >= screenBottomLimit){
+        ball_yv = -ball_yv
+    }
 
-   if(gameStarted){
-       ball_xp += ball_xv
-       ball_yp += ball_yv
-   }
+    if(ball_xp >= 250) handleRightGoal()
+    else if(ball_xp <= 0) handleLeftGoal()
 
-   if(ball_yp <= screenTopLimit){
-       ball_yv = -ball_yv
-   }
-   if(ball_yp >= screenBottomLimit){
-    ball_yv = -ball_yv
-}
-
-   if(ball_xp >= 250) handleRightGoal()
-   else if(ball_xp <= 0) handleLeftGoal()
-
-   handleLeftBounce()
-   handleRightBounce()
+    handleLeftBounce()
+    handleRightBounce()
 
 }
 
-function handleRightGoal(){
+
+function fill_vram() {
+    draw_ball();
+    draw_paddles();
+    draw_scores();
+
+    if (initialized) return;
+    initialized = true;
+    fill_PMF();
+    fill_PMB();
+}
+
+
+
+
+/* ====================================================================== */
+/* ============================= Game Logic ============================= */
+/* ====================================================================== */
+
+
+function handleRightGoal() {
     gameStarted = false;
     leftScoreOnes++
     if(leftScoreOnes == 10){
@@ -145,7 +160,7 @@ function handleLeftGoal() {
     ball_yp = 150
     ball_xv = 1
     ball_yv = 0
-    
+
     leftPaddle_y = 150;
     rightPaddle_y = 150;
 
@@ -196,7 +211,15 @@ function handleRightBounce() {
 
 }
 
-setTimeout(() => { 
+
+
+
+/* ====================================================================== */
+/* ================================ Debug =============================== */
+/* ====================================================================== */
+
+
+setTimeout(() => {
     setNumControllers(2)
     document.querySelector("#Game__Canvas").addEventListener("click", (e) => {
         console.log(`ball position (x,y): [${ball_xp}, ${ball_yp}]`)
@@ -204,36 +227,6 @@ setTimeout(() => {
         console.log(`right paddle position (x,y): [${rightPaddle_x}, ${rightPaddle_y}]`)
     })
 }, 100)
-
-
-
-function fill_vram() {
-    draw_ball();
-    draw_paddles();
-    draw_scores();
-
-    if (initialized) return;
-    initialized = true;
-    //VRAM_RESET();
-    fill_PMF();
-    fill_PMB();
-}
-
-function getInput() {
-
-    upArrowPressed = false;
-    downArrowPressed = false;
-
-    wPressed = false;
-    sPressed = false;
-
-    upArrowPressed = CONTROLLER1_UP()
-    downArrowPressed = CONTROLLER1_DOWN()
-
-    wPressed = CONTROLLER2_UP()
-    sPressed = CONTROLLER2_DOWN()
-
-}
 
 
 
