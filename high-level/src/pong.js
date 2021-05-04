@@ -1,26 +1,39 @@
 
 /* pong.js */
 var initialized = false;
-var twoControllers = true;
 
 var upArrowPressed = false
 var downArrowPressed = false
 
+// game will start when either of the controllers will be moved
+var gameStarted = false;
+
 const   leftPaddle_x        = 30;
-var     leftPaddle_y        = 50;
+var     leftPaddle_y        = 150;
 var     leftScoreOnes       = 0;
 var     leftScoreTens       = 0;
 
+const screenBottomLimit = 225;
+const screenTopLimit = 0;
+
+const leftPaddleHitBoxX = 38;
+const rightPaddleHitBoxX = 209;
+const paddleHitBoxTop = -7;
+const paddleHitBoxBottom = 14;
+
+
+
+
 const paddleSpeed = 5;
 
-const   rightPaddle_x       = 120;
-var     rightPaddle_y       = 50;
+const   rightPaddle_x       = 217;
+var     rightPaddle_y       = 150;
 var     rightScoreOnes      = 0;
 var     rightScoreTens      = 0;
 
-var     ball_xp             = 30;
-var     ball_xv             = 5;
-var     ball_yp             = 0;
+var     ball_xp             = 60;
+var     ball_xv             = -1;
+var     ball_yp             = 150;
 var     ball_yv             = 0;
 
 const   ball_PMFA           = 0;
@@ -52,7 +65,7 @@ function reset() {
 
 function do_logic() {
 
-    console.log("Do_logic is running")
+    //console.log(`Do_logic is running ${rightPaddle_y}`)
     
 
     getInput()
@@ -65,7 +78,134 @@ function do_logic() {
        rightPaddle_y += paddleSpeed
    }
 
+   if( wPressed ){
+       leftPaddle_y -= paddleSpeed
+   }
+
+   if( sPressed ){
+       leftPaddle_y += paddleSpeed
+   }
+
+   if(sPressed || wPressed || downArrowPressed || upArrowPressed) gameStarted = true;
+
+   // put constraints on the paddle positions so they don't fly off screen
+   rightPaddle_y = Math.max(rightPaddle_y, screenTopLimit)
+   rightPaddle_y = Math.min(rightPaddle_y, screenBottomLimit)
+
+   leftPaddle_y = Math.max(leftPaddle_y, screenTopLimit)
+   leftPaddle_y = Math.min(leftPaddle_y, screenBottomLimit)
+
+   if(gameStarted){
+       ball_xp += ball_xv
+       ball_yp += ball_yv
+   }
+
+   if(ball_yp <= screenTopLimit){
+       ball_yv = -ball_yv
+   }
+   if(ball_yp >= screenBottomLimit){
+    ball_yv = -ball_yv
 }
+
+   if(ball_xp >= 250) handleRightGoal()
+   else if(ball_xp <= 0) handleLeftGoal()
+
+   handleLeftBounce()
+   handleRightBounce()
+
+}
+
+function handleRightGoal(){
+    gameStarted = false;
+    leftScoreOnes++
+    if(leftScoreOnes == 10){
+        leftScoreOnes = 0
+        leftScoreTens++
+    }
+
+    ball_xp = 209
+    ball_yp = 150
+    ball_xv = -1
+    ball_yv = 0
+
+    leftPaddle_y = 150;
+    rightPaddle_y = 150;
+}
+
+function handleLeftGoal() {
+
+    gameStarted = false;
+    rightScoreOnes++
+    if(rightScoreOnes == 10){
+        rightScoreOnes = 0
+        rightScoreTens++
+    }
+
+    ball_xp = 38
+    ball_yp = 150
+    ball_xv = 1
+    ball_yv = 0
+    
+    leftPaddle_y = 150;
+    rightPaddle_y = 150;
+
+}
+
+function handleLeftBounce() {
+
+    if(!gameStarted) return
+    if(Math.abs(ball_xp - leftPaddleHitBoxX) > 0.35) return;
+    if(ball_xv > 0) return
+
+    console.log("t")
+
+    console.log(`needs to be greater than ${leftPaddle_y - paddleHitBoxTop}, actual: ${ball_yp}`)
+
+    if(ball_yp < (leftPaddle_y + paddleHitBoxTop)) return
+
+    console.log("y")
+
+    if(ball_yp > (leftPaddle_y + paddleHitBoxBottom)) return
+
+    console.log("u")
+
+    ball_xv = -ball_xv
+
+
+}
+
+function handleRightBounce() {
+
+    if(!gameStarted) return
+    if(Math.abs(ball_xp - rightPaddleHitBoxX) > 0.35) return;
+    if(ball_xv < 0) return
+
+    console.log("t")
+
+    console.log(`needs to be greater than ${rightPaddle_y - paddleHitBoxTop}, actual: ${ball_yp}`)
+
+    if(ball_yp < (rightPaddle_y + paddleHitBoxTop)) return
+
+    console.log("y")
+
+    if(ball_yp > (rightPaddle_y + paddleHitBoxBottom)) return
+
+    console.log("u")
+
+    ball_xv = -ball_xv
+
+}
+
+setTimeout(() => { 
+    setNumControllers(2)
+    document.querySelector("#Game__Canvas").addEventListener("click", (e) => {
+        console.log(`ball position (x,y): [${ball_xp}, ${ball_yp}]`)
+        console.log(`left paddle position (x,y): [${leftPaddle_x}, ${leftPaddle_y}]`)
+        console.log(`right paddle position (x,y): [${rightPaddle_x}, ${rightPaddle_y}]`)
+    })
+}, 100)
+
+
 
 function fill_vram() {
     draw_ball();
@@ -84,8 +224,14 @@ function getInput() {
     upArrowPressed = false;
     downArrowPressed = false;
 
+    wPressed = false;
+    sPressed = false;
+
     upArrowPressed = CONTROLLER1_UP()
     downArrowPressed = CONTROLLER1_DOWN()
+
+    wPressed = CONTROLLER2_UP()
+    sPressed = CONTROLLER2_DOWN()
 
 }
 
@@ -308,18 +454,26 @@ function drawNumber1( numberID ) {
     if(numberID === 1) base += 3
     if(numberID === 2) base += 17
     if(numberID === 3) base += 20
+    //1
+    NTBL_setColor( base, false )
     //2
     NTBL_setAddr( base+1, number_edgev_PMBA)
     NTBL_setHFlip( base+1, true )
     NTBL_setColor( base+1, true )
+    //3
+    NTBL_setColor( base+32, false )
     //4
     NTBL_setAddr( base+33, number_edgev_PMBA)
     NTBL_setHFlip( base+33, true )
     NTBL_setColor( base+33, true )
+    //5
+    NTBL_setColor( base+64, false )
     //6
     NTBL_setAddr( base+65, number_edgev_PMBA)
     NTBL_setHFlip( base+65, true )
     NTBL_setColor( base+65, true )
+    //7
+    NTBL_setColor( base+96, false )
     //8
     NTBL_setAddr( base+97, number_edgev_PMBA)
     NTBL_setVFlip(base+97, true)
@@ -366,6 +520,7 @@ function drawNumber2( numberID ) {
 
     NTBL_setColor( base+64, true )
     //6
+    NTBL_setColor( base+65, false )
     //7
     NTBL_setAddr( base+96, number_corner_PMBA)
     NTBL_setVFlip(base+96, true)
@@ -411,6 +566,7 @@ function drawNumber3( numberID ) {
 
     NTBL_setColor( base+33, true )
     //5
+    NTBL_setColor( base+64, false )
     //6
     NTBL_setAddr( base+65, number_edgev_PMBA)
     NTBL_setHFlip( base+65, true)
@@ -457,10 +613,14 @@ function drawNumber4( numberID ) {
     NTBL_setVFlip( base+33, true )
     NTBL_setHFlip( base+33, true )
     NTBL_setColor( base+33, true )
+    //5
+    NTBL_setColor( base+64, false )
     //6
     NTBL_setAddr( base+65, number_edgev_PMBA)
     NTBL_setHFlip( base+65, true )
     NTBL_setColor( base+65, true )
+    //7
+    NTBL_setColor( base+96, false )
     //8
     NTBL_setAddr( base+97, number_edgev_PMBA)
     NTBL_setVFlip(base+97, true)
@@ -503,6 +663,7 @@ function drawNumber5( numberID ) {
 
     NTBL_setColor( base+33, true )
     //5
+    NTBL_setColor( base+64, false )
     //6
     NTBL_setAddr( base+65, number_edgev_PMBA)
     NTBL_setHFlip( base+65, true)
@@ -538,6 +699,7 @@ function drawNumber6( numberID ) {
     //NTBL_setVFlip( base, true )
     NTBL_setColor( base, true )
     //2
+    NTBL_setColor( base+1, false )
     //3
     NTBL_setAddr( base+32, number_corner_PMBA)
     NTBL_setVFlip( base+32, true )
@@ -590,14 +752,20 @@ function drawNumber7( numberID ) {
     NTBL_setAddr( base+1, number_corner_PMBA)
     NTBL_setHFlip( base+1, true )
     NTBL_setColor( base+1, true )
+    //3
+    NTBL_setColor( base+32, false )
     //4
     NTBL_setAddr( base+33, number_edgev_PMBA)
     NTBL_setHFlip( base+33, true )
     NTBL_setColor( base+33, true )
+    //5
+    NTBL_setColor( base+64, false )
     //6
     NTBL_setAddr( base+65, number_edgev_PMBA)
     NTBL_setHFlip( base+65, true )
     NTBL_setColor( base+65, true )
+    //7
+    NTBL_setColor( base+96, false )
     //8
     NTBL_setAddr( base+97, number_edgev_PMBA)
     NTBL_setVFlip(base+97, true)
@@ -686,11 +854,13 @@ function drawNumber9( numberID ) {
     NTBL_setHFlip( base+33, true )
     NTBL_setColor( base+33, true )
     //5
+    NTBL_setColor( base+64, false )
     //6
     NTBL_setAddr( base+65, number_edgev_PMBA)
     NTBL_setHFlip( base+65, true )
     NTBL_setColor( base+65, true )
     //7
+    NTBL_setColor( base+96, false )
     //8
     NTBL_setAddr( base+97, number_edgev_PMBA)
     NTBL_setHFlip( base+97, true )
