@@ -7,35 +7,35 @@ var initialized             = false;
 // game will start when either of the controllers will be moved
 var gameStarted             = false;
 
-const   leftPaddle_x        = 30;
-var     leftPaddle_y        = 150;
+const   leftPaddle_x        = new Q9_6(30);
+var     leftPaddle_y        = new Q9_6(150);
 var     leftScoreOnes       = 0;
 var     leftScoreTens       = 0;
 
-const   screenBottomLimit   = 225;
-const   screenTopLimit      = 0;
+const   screenBottomLimit   = new Q9_6(225);
+const   screenTopLimit      = new Q9_6(0);
 
-const   leftPaddleHitBoxX   = 38;
-const   rightPaddleHitBoxX  = 209;
-const   paddleHitBoxTop     = -7;
-const   paddleHitBoxBottom  = 14;
-
-
+const   leftPaddleHitBoxX   = new Q9_6(38);
+const   rightPaddleHitBoxX  = new Q9_6(209);
+const   paddleHitBoxTop     = new Q9_6(-7);
+const   paddleHitBoxBottom  = new Q9_6(14);
 
 
-const   paddleSpeed         = 5;
 
-const   rightPaddle_x       = 217;
-var     rightPaddle_y       = 150;
+
+const   paddleSpeed         = new Q9_6(5);
+
+const   rightPaddle_x       = new Q9_6(217);
+var     rightPaddle_y       = new Q9_6(150);
 var     rightScoreOnes      = 0;
 var     rightScoreTens      = 0;
 
 // might want to make these a Q9_6
 // https://github.com/ucsbieee/arcade/blob/f72d8297d7c048d84677ff8892c5a867fe0f105f/high-level/src/firmware.js#L6
-var     ball_xp             = 60;
-var     ball_xv             = -1;
-var     ball_yp             = 150;
-var     ball_yv             = 0;
+var     ball_xp             = new Q9_6(60);
+var     ball_xv             = new Q9_6(-1);
+var     ball_yp             = new Q9_6(150);
+var     ball_yv             = new Q9_6(0);
 
 const   ball_PMFA           = 0;
 const   paddle_PMFA         = 1;
@@ -59,7 +59,8 @@ const   paddle2bottom_o     = 4;
 
 function reset() {
     console.log("reseting!");
-    initialized = false
+    initialized = false;
+    setNumControllers(2);
 }
 
 function do_logic() {
@@ -68,42 +69,42 @@ function do_logic() {
 
 
     if        ( CONTROLLER1_UP() ) {
-        rightPaddle_y -= paddleSpeed;
+        rightPaddle_y = Q9_6_sub(rightPaddle_y,paddleSpeed);
         gameStarted = true;
     } else if ( CONTROLLER1_DOWN() ) {
-        rightPaddle_y += paddleSpeed;
+        rightPaddle_y = Q9_6_add(rightPaddle_y,paddleSpeed);
         gameStarted = true;
     }
-
     if        ( CONTROLLER2_UP() ) {
-        leftPaddle_y -= paddleSpeed;
+        //debugger;
+        leftPaddle_y = Q9_6_sub(leftPaddle_y,paddleSpeed);
         gameStarted = true;
     } else if ( CONTROLLER2_DOWN() ) {
-        leftPaddle_y += paddleSpeed;
+        leftPaddle_y = Q9_6_add(leftPaddle_y,paddleSpeed);
         gameStarted = true;
     }
 
     // put constraints on the paddle positions so they don't fly off screen
-    rightPaddle_y = Math.max(rightPaddle_y, screenTopLimit)
-    rightPaddle_y = Math.min(rightPaddle_y, screenBottomLimit)
+    rightPaddle_y = Q9_6_max(rightPaddle_y, screenTopLimit)
+    rightPaddle_y = Q9_6_min(rightPaddle_y, screenBottomLimit)
 
-    leftPaddle_y = Math.max(leftPaddle_y, screenTopLimit)
-    leftPaddle_y = Math.min(leftPaddle_y, screenBottomLimit)
+    leftPaddle_y = Q9_6_max(leftPaddle_y, screenTopLimit)
+    leftPaddle_y = Q9_6_min(leftPaddle_y, screenBottomLimit)
 
     if(gameStarted){
-        ball_xp += ball_xv
-        ball_yp += ball_yv
+        ball_xp = Q9_6_add(ball_xv, ball_xp)
+        ball_yp = Q9_6_add(ball_yv, ball_yp)
     }
 
-    if(ball_yp <= screenTopLimit){
-        ball_yv = -ball_yv
+    if(Q9_6_lte(ball_yp,screenTopLimit)){
+        ball_yv = Q9_6_mul(ball_yv, new Q9_6(-1))
     }
-    if(ball_yp >= screenBottomLimit){
-        ball_yv = -ball_yv
+    if(Q9_6_gte(ball_yp,screenBottomLimit)){
+        ball_yv = Q9_6_mul(ball_yv, new Q9_6(-1))
     }
 
-    if(ball_xp >= 250) handleRightGoal()
-    else if(ball_xp <= 0) handleLeftGoal()
+    if(Q9_6_gte(ball_xp, new Q9_6(250))) handleRightGoal()
+    else if(Q9_6_lte(ball_xp, new Q9_6(0))) handleLeftGoal()
 
     handleLeftBounce()
     handleRightBounce()
@@ -136,15 +137,16 @@ function handleRightGoal() {
     if(leftScoreOnes == 10){
         leftScoreOnes = 0
         leftScoreTens++
+        //once score = 11, quit
     }
 
-    ball_xp = 209
-    ball_yp = 150
-    ball_xv = -1
-    ball_yv = 0
+    ball_xp = new Q9_6(209)
+    ball_yp = new Q9_6(150)
+    ball_xv = new Q9_6(-1)
+    ball_yv = new Q9_6(0)
 
-    leftPaddle_y = 150;
-    rightPaddle_y = 150;
+    leftPaddle_y = new Q9_6(150);
+    rightPaddle_y = new Q9_6(150);
 }
 
 function handleLeftGoal() {
@@ -154,61 +156,70 @@ function handleLeftGoal() {
     if(rightScoreOnes == 10){
         rightScoreOnes = 0
         rightScoreTens++
+        //once score = 11, quit
     }
 
-    ball_xp = 38
-    ball_yp = 150
-    ball_xv = 1
-    ball_yv = 0
+    ball_xp = new Q9_6(38)
+    ball_yp = new Q9_6(150)
+    ball_xv = new Q9_6(1)
+    ball_yv = new Q9_6(0)
 
-    leftPaddle_y = 150;
-    rightPaddle_y = 150;
+    leftPaddle_y = new Q9_6(150);
+    rightPaddle_y = new Q9_6(150);
 
 }
 
 function handleLeftBounce() {
-
+    //debugger;
     if(!gameStarted) return
-    if(Math.abs(ball_xp - leftPaddleHitBoxX) > 0.35) return;
-    if(ball_xv > 0) return
+    let BallPaddleDistance = Q9_6_sub(ball_xp,leftPaddleHitBoxX)
+    BallPaddleDistance = Q9_6_abs(BallPaddleDistance)
+    if(Q9_6_gte(BallPaddleDistance,new Q9_6(.35))) return;
+    if(Q9_6_gt(ball_xv,new Q9_6(0))) return
 
     console.log("t")
 
-    console.log(`needs to be greater than ${leftPaddle_y - paddleHitBoxTop}, actual: ${ball_yp}`)
+    console.log(`needs to be greater than ${Q9_6_sub(leftPaddle_y,paddleHitBoxTop)}, actual: ${ball_yp}`)
 
-    if(ball_yp < (leftPaddle_y + paddleHitBoxTop)) return
+    if(Q9_6_lt(ball_yp, Q9_6_add(leftPaddle_y,paddleHitBoxTop))) return 
+
 
     console.log("y")
 
-    if(ball_yp > (leftPaddle_y + paddleHitBoxBottom)) return
+    if(Q9_6_gt(ball_yp, Q9_6_add(leftPaddle_y,paddleHitBoxBottom))) return
 
     console.log("u")
 
-    ball_xv = -ball_xv
+    ball_xv = Q9_6_neg(ball_xv)
 
+    //add vertical velocity based on the distance between ball and paddle center 
 
 }
 
 function handleRightBounce() {
 
     if(!gameStarted) return
-    if(Math.abs(ball_xp - rightPaddleHitBoxX) > 0.35) return;
-    if(ball_xv < 0) return
+    let BallPaddleDistance = Q9_6_sub(ball_xp,rightPaddleHitBoxX)
+    BallPaddleDistance = Q9_6_abs(BallPaddleDistance)
+    if(Q9_6_gte(BallPaddleDistance,new Q9_6(.35))) return;
+
+    if(Q9_6_lt(ball_xv,new Q9_6(0))) return
 
     console.log("t")
 
-    console.log(`needs to be greater than ${rightPaddle_y - paddleHitBoxTop}, actual: ${ball_yp}`)
+    console.log(`needs to be greater than ${Q9_6_sub(rightPaddle_y,paddleHitBoxTop)}, actual: ${ball_yp}`)
 
-    if(ball_yp < (rightPaddle_y + paddleHitBoxTop)) return
+    if(Q9_6_lt(ball_yp, Q9_6_add(rightPaddle_y,paddleHitBoxTop))) return
 
     console.log("y")
 
-    if(ball_yp > (rightPaddle_y + paddleHitBoxBottom)) return
+    if(Q9_6_gt(ball_yp, Q9_6_add(rightPaddle_y,paddleHitBoxBottom))) return
 
     console.log("u")
 
-    ball_xv = -ball_xv
+    ball_xv = Q9_6_neg(ball_xv)
 
+    //add vertical velocity based on the distance between ball and paddle center 
 }
 
 
@@ -220,7 +231,7 @@ function handleRightBounce() {
 
 
 setTimeout(() => {
-    setNumControllers(2)
+    //setNumControllers(2)
     document.querySelector("#Game__Canvas").addEventListener("click", (e) => {
         console.log(`ball position (x,y): [${ball_xp}, ${ball_yp}]`)
         console.log(`left paddle position (x,y): [${leftPaddle_x}, ${leftPaddle_y}]`)
@@ -240,35 +251,35 @@ setTimeout(() => {
 function draw_paddles() {
     OBM_setAddr( paddle1top_o, paddle_PMFA );
     OBM_setColor( paddle1top_o, 7 );
-    OBM_setX( paddle1top_o, leftPaddle_x );
-    OBM_setY( paddle1top_o, leftPaddle_y );
+    OBM_setX( paddle1top_o, leftPaddle_x.toSINT());
+    OBM_setY( paddle1top_o, leftPaddle_y.toSINT());
     OBM_setVFlip( paddle1top_o, true );
     OBM_setHFlip( paddle1top_o, true );
 
     OBM_setAddr( paddle1bottom_o, paddle_PMFA );
     OBM_setColor( paddle1bottom_o, 7 );
-    OBM_setX( paddle1bottom_o, leftPaddle_x );
-    OBM_setY( paddle1bottom_o, leftPaddle_y+8 );
+    OBM_setX( paddle1bottom_o, leftPaddle_x.toSINT());
+    OBM_setY( paddle1bottom_o, leftPaddle_y.toSINT()+8);
     OBM_setHFlip( paddle1bottom_o, true );
 
     OBM_setAddr( paddle2top_o, paddle_PMFA );
     OBM_setColor( paddle2top_o, 7 );
-    OBM_setX( paddle2top_o, rightPaddle_x );
-    OBM_setY( paddle2top_o, rightPaddle_y );
+    OBM_setX( paddle2top_o, rightPaddle_x.toSINT());
+    OBM_setY( paddle2top_o, rightPaddle_y.toSINT());
     OBM_setVFlip( paddle2top_o, true );
 
     OBM_setAddr( paddle2bottom_o, paddle_PMFA );
     OBM_setColor( paddle2bottom_o, 7 );
-    OBM_setX( paddle2bottom_o, rightPaddle_x );
-    OBM_setY( paddle2bottom_o, rightPaddle_y+8 );
+    OBM_setX( paddle2bottom_o, rightPaddle_x.toSINT());
+    OBM_setY( paddle2bottom_o, rightPaddle_y.toSINT()+8);
 }
 
 // fill OBM with ball sprite
 function draw_ball() {
     OBM_setAddr( ball_o, ball_PMFA );
     OBM_setColor( ball_o, 7 );
-    OBM_setX( ball_o, ball_xp );
-    OBM_setY( ball_o, ball_yp );
+    OBM_setX( ball_o, ball_xp.toSINT());
+    OBM_setY( ball_o, ball_yp.toSINT());
 }
 
 // fill NTBL with number_edge and number_corner tiles
