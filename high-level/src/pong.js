@@ -181,7 +181,7 @@ function handleLeftBounce() {
 
     console.log(`needs to be greater than ${Q9_6_sub(leftPaddle_y,paddleHitBoxTop)}, actual: ${ball_yp}`)
 
-    if(Q9_6_lt(ball_yp, Q9_6_add(leftPaddle_y,paddleHitBoxTop))) return 
+    if(Q9_6_lt(ball_yp, Q9_6_add(leftPaddle_y,paddleHitBoxTop))) return
 
 
     console.log("y")
@@ -192,7 +192,7 @@ function handleLeftBounce() {
 
     ball_xv = Q9_6_neg(ball_xv)
 
-    //add vertical velocity based on the distance between ball and paddle center 
+    //add vertical velocity based on the distance between ball and paddle center
 
 }
 
@@ -219,7 +219,7 @@ function handleRightBounce() {
 
     ball_xv = Q9_6_neg(ball_xv)
 
-    //add vertical velocity based on the distance between ball and paddle center 
+    //add vertical velocity based on the distance between ball and paddle center
 }
 
 
@@ -355,8 +355,8 @@ function fill_PMF() {
 }
 
 function fill_PMB() {
-    NTBL_Color1 = 0;
-    NTBL_Color2 = 7;
+    NTBL_Color0 = 0;
+    NTBL_Color1 = 7;
     // number_corner
     PMB[ 0] = 0b11111111; PMB[ 1] = 0b11111111;
     PMB[ 2] = 0b11111111; PMB[ 3] = 0b11111111;
