@@ -2,10 +2,16 @@
 /* pong.js */
 
 
-var initialized             = false;
+var     initialized         = false;
 
 // game will start when either of the controllers will be moved
-var gameStarted             = false;
+var     ballMoving          = false;
+var     inProgress          = true;
+var     objectColor         = 7;
+var     backgroundColor     = 7;
+const   CelDelay            = 300;
+var     CelCount            = 0;
+var     ballStartSpeed      = new Q9_6(1);
 
 const   leftPaddle_x        = new Q9_6(30);
 var     leftPaddle_y        = new Q9_6(150);
@@ -20,6 +26,11 @@ const   rightPaddleHitBoxX  = new Q9_6(209);
 const   paddleHitBoxTop     = new Q9_6(-7);
 const   paddleHitBoxBottom  = new Q9_6(14);
 
+// function celebrate() 
+// don't call get controls (b/c inProgress is false)
+// change colors to red
+// after 300 frames, set inProgress back to true
+// reset scores()
 
 
 
@@ -61,27 +72,33 @@ function reset() {
     console.log("reseting!");
     initialized = false;
     setNumControllers(2);
+    end_celebrate();
 }
 
 function do_logic() {
 
     //console.log(`Do_logic is running ${rightPaddle_y}`)
-
-
+    if (CelCount !=0 ) { //if we haven't run for 300 frames after celebration has started, we decrement CelCount. Otherwise, we end_celebrate().
+        CelCount--; 
+        if (CelCount == 0) { end_celebrate(); }
+        return; 
+    } 
+    checkScore(); //checks to see if game still in progress
+    if (!inProgress) { start_celebrate(); return; } //sets CelCount to 300
     if        ( CONTROLLER1_UP() ) {
         rightPaddle_y = Q9_6_sub(rightPaddle_y,paddleSpeed);
-        gameStarted = true;
+        ballMoving = true;
     } else if ( CONTROLLER1_DOWN() ) {
         rightPaddle_y = Q9_6_add(rightPaddle_y,paddleSpeed);
-        gameStarted = true;
+        ballMoving = true;
     }
     if        ( CONTROLLER2_UP() ) {
         //debugger;
         leftPaddle_y = Q9_6_sub(leftPaddle_y,paddleSpeed);
-        gameStarted = true;
+        ballMoving = true;
     } else if ( CONTROLLER2_DOWN() ) {
         leftPaddle_y = Q9_6_add(leftPaddle_y,paddleSpeed);
-        gameStarted = true;
+        ballMoving = true;
     }
 
     // put constraints on the paddle positions so they don't fly off screen
@@ -91,7 +108,7 @@ function do_logic() {
     leftPaddle_y = Q9_6_max(leftPaddle_y, screenTopLimit)
     leftPaddle_y = Q9_6_min(leftPaddle_y, screenBottomLimit)
 
-    if(gameStarted){
+    if(ballMoving){
         ball_xp = Q9_6_add(ball_xv, ball_xp)
         ball_yp = Q9_6_add(ball_yv, ball_yp)
     }
@@ -102,17 +119,21 @@ function do_logic() {
     if(Q9_6_gte(ball_yp,screenBottomLimit)){
         ball_yv = Q9_6_mul(ball_yv, new Q9_6(-1))
     }
+    if((Q9_6_gte(ball_xp, new Q9_6(250))) && (inProgress)) handleRightGoal()
 
-    if(Q9_6_gte(ball_xp, new Q9_6(250))) handleRightGoal()
-    else if(Q9_6_lte(ball_xp, new Q9_6(0))) handleLeftGoal()
+    else if((Q9_6_lte(ball_xp, new Q9_6(0))) && (inProgress)) handleLeftGoal()
 
     handleLeftBounce()
     handleRightBounce()
 
 }
 
+function checkScore(){
+    inProgress = !(((leftScoreOnes == 1) && (leftScoreTens == 1)) || ((rightScoreOnes == 1) && (rightScoreTens == 1)))
+}
 
 function fill_vram() {
+    updateGameColors();
     draw_ball();
     draw_paddles();
     draw_scores();
@@ -132,17 +153,17 @@ function fill_vram() {
 
 
 function handleRightGoal() {
-    gameStarted = false;
+    ballMoving = false;
+    ballStartSpeed = Q9_6_add(ballStartSpeed, new Q9_6(.05));
     leftScoreOnes++
     if(leftScoreOnes == 10){
         leftScoreOnes = 0
         leftScoreTens++
-        //once score = 11, quit
     }
-
+    //if ((letScoreTens == 1) && (leftScoreOnes == 1)) { inProgress = false; } 
     ball_xp = new Q9_6(209)
     ball_yp = new Q9_6(150)
-    ball_xv = new Q9_6(-1)
+    ball_xv = Q9_6_neg(ballStartSpeed);
     ball_yv = new Q9_6(0)
 
     leftPaddle_y = new Q9_6(150);
@@ -150,18 +171,19 @@ function handleRightGoal() {
 }
 
 function handleLeftGoal() {
-
-    gameStarted = false;
+    ballMoving = false;
+    ballStartSpeed = Q9_6_add(ballStartSpeed, new Q9_6(.05));
     rightScoreOnes++
     if(rightScoreOnes == 10){
         rightScoreOnes = 0
         rightScoreTens++
         //once score = 11, quit
     }
+    //if ((rightScoreTens == 1) && (rightScoreOnes == 1)) { inProgress = false; } 
 
     ball_xp = new Q9_6(38)
     ball_yp = new Q9_6(150)
-    ball_xv = new Q9_6(1)
+    ball_xv = ballStartSpeed
     ball_yv = new Q9_6(0)
 
     leftPaddle_y = new Q9_6(150);
@@ -171,7 +193,7 @@ function handleLeftGoal() {
 
 function handleLeftBounce() {
     //debugger;
-    if(!gameStarted) return
+    if(!ballMoving) return
     let BallPaddleDistance = Q9_6_sub(ball_xp,leftPaddleHitBoxX)
     BallPaddleDistance = Q9_6_abs(BallPaddleDistance)
     if(Q9_6_gte(BallPaddleDistance,new Q9_6(.35))) return;
@@ -198,7 +220,7 @@ function handleLeftBounce() {
 
 function handleRightBounce() {
 
-    if(!gameStarted) return
+    if(!ballMoving) return
     let BallPaddleDistance = Q9_6_sub(ball_xp,rightPaddleHitBoxX)
     BallPaddleDistance = Q9_6_abs(BallPaddleDistance)
     if(Q9_6_gte(BallPaddleDistance,new Q9_6(.35))) return;
@@ -222,7 +244,34 @@ function handleRightBounce() {
     //add vertical velocity based on the distance between ball and paddle center
 }
 
+function start_celebrate(){
+    CelCount = CelDelay;
+}
 
+function end_celebrate(){
+    rightScoreOnes = 0;
+    rightScoreTens = 0;
+    leftScoreOnes  = 0;
+    leftScoreTens  = 0;
+}
+function updateGameColors(){
+    if (inProgress) {
+        objectColor = 7;
+        backgroundColor = 7;
+    }
+    else if (CelCount < (CelDelay - 60)){
+        objectColor = 4;
+        backgroundColor = 4;
+    }
+    else if ((CelCount & 0b100) == 0) { 
+        objectColor = 4;
+        backgroundColor = 4;
+    }
+    else {
+        objectColor = 0;
+        backgroundColor = 0;
+    }
+}
 
 
 /* ====================================================================== */
@@ -250,26 +299,26 @@ setTimeout(() => {
 // fill OBM with paddle sprites
 function draw_paddles() {
     OBM_setAddr( paddle1top_o, paddle_PMFA );
-    OBM_setColor( paddle1top_o, 7 );
+    OBM_setColor( paddle1top_o, objectColor );
     OBM_setX( paddle1top_o, leftPaddle_x.toSINT());
     OBM_setY( paddle1top_o, leftPaddle_y.toSINT());
     OBM_setVFlip( paddle1top_o, true );
     OBM_setHFlip( paddle1top_o, true );
 
     OBM_setAddr( paddle1bottom_o, paddle_PMFA );
-    OBM_setColor( paddle1bottom_o, 7 );
+    OBM_setColor( paddle1bottom_o, objectColor );
     OBM_setX( paddle1bottom_o, leftPaddle_x.toSINT());
     OBM_setY( paddle1bottom_o, leftPaddle_y.toSINT()+8);
     OBM_setHFlip( paddle1bottom_o, true );
 
     OBM_setAddr( paddle2top_o, paddle_PMFA );
-    OBM_setColor( paddle2top_o, 7 );
+    OBM_setColor( paddle2top_o, objectColor );
     OBM_setX( paddle2top_o, rightPaddle_x.toSINT());
     OBM_setY( paddle2top_o, rightPaddle_y.toSINT());
     OBM_setVFlip( paddle2top_o, true );
 
     OBM_setAddr( paddle2bottom_o, paddle_PMFA );
-    OBM_setColor( paddle2bottom_o, 7 );
+    OBM_setColor( paddle2bottom_o, objectColor );
     OBM_setX( paddle2bottom_o, rightPaddle_x.toSINT());
     OBM_setY( paddle2bottom_o, rightPaddle_y.toSINT()+8);
 }
@@ -277,13 +326,16 @@ function draw_paddles() {
 // fill OBM with ball sprite
 function draw_ball() {
     OBM_setAddr( ball_o, ball_PMFA );
-    OBM_setColor( ball_o, 7 );
+    OBM_setColor( ball_o, objectColor );
     OBM_setX( ball_o, ball_xp.toSINT());
     OBM_setY( ball_o, ball_yp.toSINT());
 }
 
 // fill NTBL with number_edge and number_corner tiles
 function draw_scores() {
+
+    NTBL_Color0 = 0;
+    NTBL_Color1 = backgroundColor;
 
     if     (leftScoreTens === 0) drawNumber0(0);
     else if(leftScoreTens === 1) drawNumber1(0);
@@ -355,8 +407,8 @@ function fill_PMF() {
 }
 
 function fill_PMB() {
-    NTBL_Color0 = 0;
-    NTBL_Color1 = 7;
+    //NTBL_Color0 = 0;
+    //NTBL_Color1 = 4;
     // number_corner
     PMB[ 0] = 0b11111111; PMB[ 1] = 0b11111111;
     PMB[ 2] = 0b11111111; PMB[ 3] = 0b11111111;
