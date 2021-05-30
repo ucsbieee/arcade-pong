@@ -38,6 +38,7 @@ var     ball_xv             = new Q9_6(-1);
 var     ball_yp             = new Q9_6(150);
 var     ball_yv             = new Q9_6(0);
 
+
 const   ball_PMFA           = 0;
 const   paddle_PMFA         = 1;
 const   number_corner_PMBA  = 0;
@@ -217,7 +218,24 @@ function handleLeftBounce() {
         return;
 
     let BallPaddleDistance = Q9_6_abs(Q9_6_sub( ball_xp, leftPaddleHitBoxX ));
-
+    let PrevBallX = Q9_6_sub(ball_xp, ball_xv);
+    let PrevBallY = Q9_6_sub(ball_yp, ball_yv);
+    let CurrDistanceCheck = Q9_6_gte( Q9_6_sub(leftPaddleHitBoxX, ball_xp), new Q9_6(.35));
+    let PrevDistanceCheck = Q9_6_gte( Q9_6_sub(PrevBallX, leftPaddleHitBoxX), new Q9_6(.35));
+    if ((CurrDistanceCheck) && (PrevDistanceCheck)) {
+        console.log("potentially lost collision");
+        PaddleTopCheck = Q9_6_lt( PrevBallY, Q9_6_add(leftPaddle_y,paddleHitBoxTop));
+        PaddleBottomCheck = Q9_6_gt( PrevBallY, Q9_6_add(leftPaddle_y,paddleHitBoxBottom) );
+        if (PaddleTopCheck)
+        return;
+        // if not above paddle bottom
+        if (PaddleBottomCheck)
+        return;
+        console.log("definite lost collision")
+        ball_xp = PrevBallX;
+        ball_yp = PrevBallY;
+        ball_xv = Q9_6_neg(ball_xv)
+    }
     // if not close enough
     if ( Q9_6_gte( BallPaddleDistance, new Q9_6(.35) ) )
     return;
@@ -238,6 +256,24 @@ function handleLeftBounce() {
 
 function handleRightBounce() {
 
+    let PrevBallX = Q9_6_sub(ball_xp, ball_xv);
+    let PrevBallY = Q9_6_sub(ball_yp, ball_yv);
+    let CurrDistanceCheck = Q9_6_gte( Q9_6_sub(ball_xp, rightPaddleHitBoxX), new Q9_6(.35));
+    let PrevDistanceCheck = Q9_6_gte( Q9_6_sub(rightPaddleHitBoxX, PrevBallX), new Q9_6(.35));
+    if ((CurrDistanceCheck) && (PrevDistanceCheck)) {
+        console.log("potentially lost collision");
+        PaddleTopCheck = Q9_6_lt( PrevBallY, Q9_6_add(rightPaddle_y,paddleHitBoxTop));
+        PaddleBottomCheck = Q9_6_gt( PrevBallY, Q9_6_add(rightPaddle_y,paddleHitBoxBottom) );
+        if (PaddleTopCheck)
+        return;
+        // if not above paddle bottom
+        if (PaddleBottomCheck)
+        return;
+        console.log("definite lost collision")
+        ball_xp = PrevBallX;
+        ball_yp = PrevBallY;
+        ball_xv = Q9_6_neg(ball_xv)
+    }
     if ( !ballMoving )
     return;
 
